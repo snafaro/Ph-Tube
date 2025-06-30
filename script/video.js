@@ -1,3 +1,21 @@
+const getStringTime = (time) => {
+    const seconds = time;
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+    const years = Math.floor(days / 365);
+
+    if (minutes < 60) {
+        return `${minutes} minute ${seconds % 60} second ago`;
+    } else if (hours < 24) {
+        return `${hours} hour ${minutes % 60} minute ago`;
+    } else if (days < 365) {
+        return `${days} day ${hours % 24} hour ago`;
+    } else {
+        return `${years} year ${days % 365} day ago`;
+    }
+};
+
 // category fetch and display
 const getCategory = () =>{
     fetch("https://openapi.programming-hero.com/api/phero-tube/categories")
@@ -28,11 +46,13 @@ const displayVideos = (videos) =>{
         const card = document.createElement('div');
         card.classList = "card card-compact";
         card.innerHTML = `
-            <figure class="h-[230px] w-full">
+            <figure class="h-[230px] w-full relative">
                 <img
                 class="h-full w-full object-cover"
                 src=${video.thumbnail}
                 alt="Thumbnail" />
+                ${video.others.posted_date ? `<span class="bg-[red] text-[white] absolute px-1 right-1 bottom-1">${getStringTime(video.others.posted_date)}</span>` : ''}
+                
             </figure>
             <div class="mt-7 flex gap-3">
                 <div>
@@ -42,7 +62,7 @@ const displayVideos = (videos) =>{
                     <h2 class="font-bold text-[18px]">${video.title}</h2>
                     <div class="flex gap-2 items-center">
                         <span>${video.authors[0].profile_name}</span>
-                        <img class="w-5" src=${video.authors[0].verified ? "https://img.icons8.com/?size=48&id=D9RtvkuOe31p&format=png" : "" } />
+                        ${video.authors[0].verified ? `<img class="w-5" src="https://img.icons8.com/?size=48&id=D9RtvkuOe31p&format=png" />` : ''}
                     </div>
                     <p>Views ${video.others.views}</p>
                 </div>
